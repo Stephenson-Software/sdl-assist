@@ -3,6 +3,3 @@
 
 # written by GraphicsEnv::init() into the working directory
 log.txt
-
-# object files
-*.o
