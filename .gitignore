@@ -1,0 +1,5 @@
+# demo executables produced by src/tests/Makefile
+*_test_executable
+
+# written by GraphicsEnv::init() into the working directory
+log.txt

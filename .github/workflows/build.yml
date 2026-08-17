@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install SDL2 development packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev
+
+      - name: Build the library and all demo programs
+        run: make -C src/tests all
+
+      - name: Verify every demo executable was produced
+        run: |
+          for exe in init rectangles renderpage text button; do
+            test -x "src/tests/${exe}_test_executable"
+          done
