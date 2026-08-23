@@ -1,6 +1,9 @@
 // goal: build a self-contained graphics environment so I don't have to
 //		 do all this stuff every time.
 
+#ifndef GRAPHICSENV_H
+#define GRAPHICSENV_H
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <string>
@@ -65,3 +68,5 @@ class GraphicsEnv {
 	
 	std::ofstream log;
 };
+
+#endif
