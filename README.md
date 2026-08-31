@@ -96,7 +96,7 @@ int main(int argc, char* args[]) {
 `init()` reports any SDL or SDL_ttf failure to `log.txt` and leaves
 `isRunning()` false, so the loop above exits immediately instead of drawing
 through a renderer that was never created. `cleanUp()` may be called more than
-once — the destructor calls it too — and does nothing on the second pass.
+once — the destructor calls it too — and has no further effect after the first.
 
 `Text` and `Button` are constructed separately and wired to the environment's
 renderer and font:
