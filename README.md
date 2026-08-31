@@ -115,12 +115,10 @@ the event loop so the button can react to the mouse.
 `GraphicsEnv::loadMedia()` opens `objects/bboron.ttf`, a path resolved relative
 to the working directory. That file is not shipped with this repository — the
 font present here is `src/fonts/lazy.ttf` — so the font fails to load unless the
-expected file is supplied. `loadMedia()` responds to the failure by calling
-`cleanUp()`, which destroys the renderer and window mid-run, so the `text` and
-`button` demos crash rather than simply rendering without text. This is tracked
-in [#7](https://github.com/Stephenson-Software/sdl-assist/issues/7),
-[#9](https://github.com/Stephenson-Software/sdl-assist/issues/9) and
-[#10](https://github.com/Stephenson-Software/sdl-assist/issues/10).
+expected file is supplied. The failure is reported to `log.txt` and the
+environment is left intact, so the `text` and `button` demos open their window
+and draw their rectangles but render no text. This is tracked in
+[#7](https://github.com/Stephenson-Software/sdl-assist/issues/7).
 
 ## License
 

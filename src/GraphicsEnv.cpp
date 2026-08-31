@@ -2,9 +2,10 @@
 
 // tors
 GraphicsEnv::GraphicsEnv() {
-	title = "GraphicsEnv Default Title";   
+	title = "GraphicsEnv Default Title";
 	screenWidth = 640;
 	screenHeight = 480;
+	running = false;
 }
 
 GraphicsEnv::~GraphicsEnv() { // dtor
@@ -15,29 +16,79 @@ GraphicsEnv::~GraphicsEnv() { // dtor
 void GraphicsEnv::init() {          
 	log.open("log.txt");
 	log << "Initializing!" << std::endl;
-	SDL_Init(SDL_INIT_VIDEO);
-	TTF_Init();
+
+	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+		log << "SDL could not initialize! SDL error: " << SDL_GetError() << std::endl;
+		cleanUp();
+		return;
+	}
+
+	if (TTF_Init() != 0) {
+		log << "SDL_ttf could not initialize! TTF error: " << TTF_GetError() << std::endl;
+		cleanUp();
+		return;
+	}
+
 	window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
+	if (window == NULL) {
+		log << "Window could not be created! SDL error: " << SDL_GetError() << std::endl;
+		cleanUp();
+		return;
+	}
+
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	if (renderer == NULL) {
+		log << "Renderer could not be created! SDL error: " << SDL_GetError() << std::endl;
+		cleanUp();
+		return;
+	}
+
 	running = true;
 }
 	
 void GraphicsEnv::loadMedia() {
 	font = TTF_OpenFont("objects/bboron.ttf", fontSize); // credit: https://www.1001fonts.com/arial-fonts.html
 	if (font == NULL) {
-		log << "Font is NULL!" << std::endl;
-		cleanUp();
+		// the environment stays usable without a font; reporting is enough
+		if (log.is_open()) {
+			log << "Font is NULL! TTF error: " << TTF_GetError() << std::endl;
+		}
 	}
 }
 
 void GraphicsEnv::cleanUp() {
-	log << "Cleaning up!" << std::endl;
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
-	TTF_Quit();
-	SDL_Quit();
-	
-	log.close();
+	if (log.is_open()) {
+		log << "Cleaning up!" << std::endl;
+	}
+
+	if (font != NULL) {
+		TTF_CloseFont(font);
+		font = NULL;
+	}
+
+	if (renderer != NULL) {
+		SDL_DestroyRenderer(renderer);
+		renderer = NULL;
+	}
+
+	if (window != NULL) {
+		SDL_DestroyWindow(window);
+		window = NULL;
+	}
+
+	if (TTF_WasInit()) {
+		TTF_Quit();
+	}
+
+	if (SDL_WasInit(0) != 0) {
+		SDL_Quit();
+	}
+
+	running = false;
+
+	if (log.is_open()) {
+		log.close();
+	}
 }
 
 // secondary methods
