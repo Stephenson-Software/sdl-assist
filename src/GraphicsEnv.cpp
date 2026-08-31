@@ -76,13 +76,10 @@ void GraphicsEnv::cleanUp() {
 		window = NULL;
 	}
 
-	if (TTF_WasInit()) {
-		TTF_Quit();
-	}
-
-	if (SDL_WasInit(0) != 0) {
-		SDL_Quit();
-	}
+	// both are safe to call when the subsystem was never initialized, and
+	// SDL_Quit() is documented as safe after a failed SDL_Init()
+	TTF_Quit();
+	SDL_Quit();
 
 	running = false;
 
