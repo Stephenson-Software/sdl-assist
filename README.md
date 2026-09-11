@@ -38,6 +38,10 @@ Each program under `src/tests/` is a standalone `main()` that opens a real
 window and runs until it receives `SDL_QUIT`, so a display is required to run
 them. Building them does not require a display.
 
+Run them from the repository root (for example `./src/tests/text_test_executable`)
+so that the default font path `src/fonts/lazy.ttf` resolves; see
+[Fonts](#fonts) below.
+
 | Target | Source | What it demonstrates |
 |--------|--------|----------------------|
 | `init` | `testInit.cpp` | The minimal lifecycle: a 400x400 window with one black rectangle centered on a white background. |
@@ -115,15 +119,27 @@ Both are rendered inside the main loop with `label.render()` and
 `button.render()`; `button.handleEvent(environment.getEvent())` is called from
 the event loop so the button can react to the mouse.
 
-## Known limitation
+A `Text` holds an `SDL_Texture` that belongs to the environment's renderer, so
+it must be released before `cleanUp()` destroys that renderer — either by
+calling `label.free()` first, as the demos do, or by letting the `Text` go out
+of scope before `cleanUp()` runs. A `Text` that is destroyed after `cleanUp()`
+passes its texture to SDL after `SDL_Quit()`. `free()` keeps the label's
+position, so a later `loadText()` redraws the new string in the same place.
 
-`GraphicsEnv::loadMedia()` opens `objects/bboron.ttf`, a path resolved relative
-to the working directory. That file is not shipped with this repository — the
-font present here is `src/fonts/lazy.ttf` — so the font fails to load unless the
-expected file is supplied. The failure is reported to `log.txt` and the
-environment is left intact, so the `text` and `button` demos open their window
-and draw their rectangles but render no text. This is tracked in
-[#7](https://github.com/Stephenson-Software/sdl-assist/issues/7).
+## Fonts
+
+`GraphicsEnv::loadMedia()` opens the file named by `setFontPath()`, which
+defaults to `src/fonts/lazy.ttf` — the font shipped with this repository. The
+path is passed to SDL_ttf as given, so a relative path resolves against the
+working directory; a consuming application should call
+`environment.setFontPath("path/to/font.ttf")` before `loadMedia()` with a path
+that is valid from wherever it is launched. `setFontSize()` must also precede
+`loadMedia()`, since the size is fixed when the font is opened.
+
+If the font cannot be opened, the failure and the path that was tried are
+reported to `log.txt` and the environment is left intact: the window opens and
+rectangles draw, but `getFont()` returns `NULL` and any `Text` initialised with
+it renders nothing.
 
 ## License
 

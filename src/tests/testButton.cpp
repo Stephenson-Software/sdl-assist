@@ -25,8 +25,7 @@ void myButtonFunc() {
 	else if (timesClicked == 3) {
 		myText3.loadText("Jeepers", textColor);
 	};
-	
-	myText3.setPosition(160, 200);
+	// the label keeps the position given to init(); no setPosition() is needed after a reload
 }
 
 int main(int argc, char* args[]) {
@@ -88,7 +87,13 @@ int main(int argc, char* args[]) {
 		// present environment
 		environment.present();
 	}
-	
+
+	// release the textures while their renderer still exists; these labels are
+	// globals, so they would otherwise outlive cleanUp()
+	myText.free();
+	myText2.free();
+	myText3.free();
+
 	// clean up environment
 	environment.cleanUp();
 }

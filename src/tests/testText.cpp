@@ -13,7 +13,10 @@ int main(int argc, char* args[]) {
 	
 	// initialize
 	environment.init();
-	
+
+	// point at the shipped font (this is also the default; the demos are run from the repository root)
+	environment.setFontPath("src/fonts/lazy.ttf");
+
 	// load media
 	environment.loadMedia();
 	
@@ -50,7 +53,11 @@ int main(int argc, char* args[]) {
 		// present environment
 		environment.present();
 	}
-	
+
+	// release the textures while their renderer still exists
+	myText.free();
+	myText2.free();
+
 	// clean up environment
 	environment.cleanUp();
 }

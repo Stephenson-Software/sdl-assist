@@ -31,8 +31,7 @@ void Text::free() {
 	if (texture != NULL) {
 		SDL_DestroyTexture(texture);
 		texture = NULL;
-		xpos = 0;
-		ypos = 0;
+		// the position belongs to the caller, not the texture, so it survives a reload
 		width = 0;
 		height = 0;
 	}

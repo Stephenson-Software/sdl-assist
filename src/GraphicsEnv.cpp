@@ -5,6 +5,7 @@ GraphicsEnv::GraphicsEnv() {
 	title = "GraphicsEnv Default Title";
 	screenWidth = 640;
 	screenHeight = 480;
+	fontPath = "src/fonts/lazy.ttf"; // the shipped font, relative to the repository root
 	running = false;
 }
 
@@ -47,11 +48,11 @@ void GraphicsEnv::init() {
 }
 	
 void GraphicsEnv::loadMedia() {
-	font = TTF_OpenFont("objects/bboron.ttf", fontSize); // credit: https://www.1001fonts.com/arial-fonts.html
+	font = TTF_OpenFont(fontPath.c_str(), fontSize); // the path is resolved against the working directory
 	if (font == NULL) {
 		// the environment stays usable without a font; reporting is enough
 		if (log.is_open()) {
-			log << "Font is NULL! TTF error: " << TTF_GetError() << std::endl;
+			log << "Font could not be opened from " << fontPath << "! TTF error: " << TTF_GetError() << std::endl;
 		}
 	}
 }
@@ -120,6 +121,10 @@ void GraphicsEnv::setTitle(std::string newTitle) {
 
 void GraphicsEnv::setFontSize(int size) {
 	fontSize = size;
+}
+
+void GraphicsEnv::setFontPath(std::string path) {
+	fontPath = path;
 }
 
 // getters
