@@ -35,7 +35,8 @@ class GraphicsEnv {
 	void setScreenHeight(int h);
 	void setTitle(std::string newTitle);
 	void setFontSize(int size);
-	
+	void setFontPath(std::string path);
+
 	// getters
 	int getW();
 	int getH();
@@ -59,6 +60,7 @@ class GraphicsEnv {
 	
 	TTF_Font* font = NULL;
 	int fontSize = 16;
+	std::string fontPath;
 	
 	std::string title;
 	
