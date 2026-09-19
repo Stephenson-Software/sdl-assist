@@ -9,7 +9,15 @@ Text sizeText;
 
 Button myButton;
 
+std::string currentStatus;
+
 void showStatus(std::string status) {
+	// the hover callback fires on every mouse motion inside the button, so the
+	// texture is only rebuilt when the label actually changes
+	if (status == currentStatus) {
+		return;
+	}
+	currentStatus = status;
 	SDL_Color textColor = {0x00, 0x00, 0x00, 0xFF};
 	statusText.loadText(status, textColor);
 }
@@ -53,7 +61,8 @@ int main(int argc, char* args[]) {
 	statusText.setPosition(25, 75);
 	statusText.setFont(environment.getFont());
 	statusText.setRenderer(environment.getRenderer());
-	statusText.loadText("Move over the button", textColor);
+	currentStatus = "Move over the button";
+	statusText.loadText(currentStatus, textColor);
 
 	// the button supplies no callback to init(); all three are attached through the setters
 	myButton.init(100, 200, 50, 50, environment.getRenderer(), NULL);
