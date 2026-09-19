@@ -1,8 +1,8 @@
 GLC_FILES = ../GraphicsEnv.cpp ../Text.cpp ../Button.cpp
 
-.PHONY: all init rectangles renderpage text button clean
+.PHONY: all init rectangles renderpage text button buttoncallbacks clean
 
-all: init rectangles renderpage text button
+all: init rectangles renderpage text button buttoncallbacks
 
 init: testInit.cpp
 	g++ testInit.cpp $(GLC_FILES) -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -o init_test_executable
@@ -19,5 +19,8 @@ text: testText.cpp
 button: testButton.cpp
 	g++ testButton.cpp $(GLC_FILES) -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -o button_test_executable
 
+buttoncallbacks: testButtonCallbacks.cpp
+	g++ testButtonCallbacks.cpp $(GLC_FILES) -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -o buttoncallbacks_test_executable
+
 clean:
-	rm -f init_test_executable rectangles_test_executable renderpage_test_executable text_test_executable button_test_executable
+	rm -f init_test_executable rectangles_test_executable renderpage_test_executable text_test_executable button_test_executable buttoncallbacks_test_executable

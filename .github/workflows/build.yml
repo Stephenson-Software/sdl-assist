@@ -24,6 +24,6 @@ jobs:
 
       - name: Verify every demo executable was produced
         run: |
-          for exe in init rectangles renderpage text button; do
+          for exe in init rectangles renderpage text button buttoncallbacks; do
             test -x "src/tests/${exe}_test_executable"
           done

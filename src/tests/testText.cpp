@@ -17,12 +17,12 @@ int main(int argc, char* args[]) {
 	// point at the shipped font (this is also the default; the demos are run from the repository root)
 	environment.setFontPath("src/fonts/lazy.ttf");
 
+	// set font size; this must precede loadMedia(), which fixes the size when it opens the font
+	environment.setFontSize(32);
+
 	// load media
 	environment.loadMedia();
-	
-	// set font size
-	environment.setFontSize(32);
-	
+
 	Text myText;
 	SDL_Color textColor = {0x00, 0x00, 0x00, 0xFF};
 	myText.init(25, 25, environment.getFont(), environment.getRenderer(), "GraphicsEnv Test 2:", textColor);

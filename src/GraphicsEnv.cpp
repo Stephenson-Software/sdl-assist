@@ -121,6 +121,10 @@ void GraphicsEnv::setTitle(std::string newTitle) {
 
 void GraphicsEnv::setFontSize(int size) {
 	fontSize = size;
+	if (font != NULL && log.is_open()) {
+		// the size is fixed when loadMedia() opens the font, so a later change has no effect on screen
+		log << "setFontSize(" << size << ") was called after loadMedia(); the open font keeps its size" << std::endl;
+	}
 }
 
 void GraphicsEnv::setFontPath(std::string path) {

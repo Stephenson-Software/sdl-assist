@@ -22,9 +22,9 @@ together with each demo program:
 make -C src/tests all
 ```
 
-This produces five executables in `src/tests/`:
+This produces six executables in `src/tests/`:
 `init_test_executable`, `rectangles_test_executable`, `renderpage_test_executable`,
-`text_test_executable` and `button_test_executable`.
+`text_test_executable`, `button_test_executable` and `buttoncallbacks_test_executable`.
 
 To remove them:
 
@@ -49,6 +49,7 @@ so that the default font path `src/fonts/lazy.ttf` resolves; see
 | `renderpage` | `testRenderPage.cpp` | Layout with rectangles — header, body and footer bands drawn in three shades of blue. |
 | `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment. |
 | `button` | `testButton.cpp` | `Button` rendering and event handling — clicking the button runs a callback that rewrites a neighbouring `Text` label. |
+| `buttoncallbacks` | `testButtonCallbacks.cpp` | The `Button` callback setters and the `Text` getters — hover, mouse-down and mouse-up callbacks attached with `setHoverFunction`, `setMouseDownFunction` and `setMouseUpFunction` each rewrite a status label, and the title label is outlined and measured using `getX`, `getY`, `getWidth` and `getHeight`. |
 
 ## Usage
 
@@ -134,7 +135,9 @@ path is passed to SDL_ttf as given, so a relative path resolves against the
 working directory; a consuming application should call
 `environment.setFontPath("path/to/font.ttf")` before `loadMedia()` with a path
 that is valid from wherever it is launched. `setFontSize()` must also precede
-`loadMedia()`, since the size is fixed when the font is opened.
+`loadMedia()`, since the size is fixed when the font is opened; a call made
+after the font is open is reported to `log.txt` and leaves the open font at its
+original size.
 
 If the font cannot be opened, the failure and the path that was tried are
 reported to `log.txt` and the environment is left intact: the window opens and
