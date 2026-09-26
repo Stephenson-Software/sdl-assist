@@ -47,7 +47,7 @@ so that the default font path `src/fonts/lazy.ttf` resolves; see
 | `init` | `testInit.cpp` | The minimal lifecycle: a 400x400 window with one black rectangle centered on a white background. |
 | `rectangles` | `testRectangles.cpp` | Animation via `drawRectangle` — a black square moves toward a small green target that relocates to a random position each time it is reached. |
 | `renderpage` | `testRenderPage.cpp` | Layout with rectangles — header, body and footer bands drawn in three shades of blue. |
-| `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment. |
+| `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment, the second after the font is reloaded at a smaller size. |
 | `button` | `testButton.cpp` | `Button` rendering and event handling — clicking the button runs a callback that rewrites a neighbouring `Text` label. |
 | `buttoncallbacks` | `testButtonCallbacks.cpp` | The `Button` callback setters and the `Text` getters — hover, mouse-down and mouse-up callbacks attached with `setHoverFunction`, `setMouseDownFunction` and `setMouseUpFunction` each rewrite a status label, and the title label is outlined and measured using `getX`, `getY`, `getWidth` and `getHeight`. |
 
@@ -137,7 +137,14 @@ working directory; a consuming application should call
 that is valid from wherever it is launched. `setFontSize()` must also precede
 `loadMedia()`, since the size is fixed when the font is opened; a call made
 after the font is open is reported to `log.txt` and leaves the open font at its
-original size.
+original size until `loadMedia()` is called again.
+
+Calling `loadMedia()` a second time closes the font it opened before and opens
+the current path and size in its place, so `getFont()` then returns a new
+pointer. A `Text` keeps whatever it has already drawn, but one that was given
+the old pointer must be re-pointed with `label.setFont(environment.getFont())`
+before its next `loadText()`, since the old font has been closed. The `text`
+demo reloads the font this way.
 
 If the font cannot be opened, the failure and the path that was tried are
 reported to `log.txt` and the environment is left intact: the window opens and

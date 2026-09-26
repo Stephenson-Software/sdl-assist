@@ -27,6 +27,13 @@ int main(int argc, char* args[]) {
 	SDL_Color textColor = {0x00, 0x00, 0x00, 0xFF};
 	myText.init(25, 25, environment.getFont(), environment.getRenderer(), "GraphicsEnv Test 2:", textColor);
 	
+	// reload the font at a smaller size; loadMedia() closes the font it opened above
+	environment.setFontSize(20);
+	environment.loadMedia();
+
+	// the first label's texture is already drawn, but its font pointer was closed, so it is re-pointed
+	myText.setFont(environment.getFont());
+
 	Text myText2;
 	textColor = {0x00, 0x00, 0x00, 0xFF};
 	myText2.init(25, 75, environment.getFont(), environment.getRenderer(), "Text Support", textColor);
