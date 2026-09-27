@@ -48,6 +48,12 @@ void GraphicsEnv::init() {
 }
 	
 void GraphicsEnv::loadMedia() {
+	if (font != NULL) {
+		// a second call replaces the open font; any Text still holding the old pointer must be re-pointed
+		TTF_CloseFont(font);
+		font = NULL;
+	}
+
 	font = TTF_OpenFont(fontPath.c_str(), fontSize); // the path is resolved against the working directory
 	if (font == NULL) {
 		// the environment stays usable without a font; reporting is enough
@@ -122,8 +128,8 @@ void GraphicsEnv::setTitle(std::string newTitle) {
 void GraphicsEnv::setFontSize(int size) {
 	fontSize = size;
 	if (font != NULL && log.is_open()) {
-		// the size is fixed when loadMedia() opens the font, so a later change has no effect on screen
-		log << "setFontSize(" << size << ") was called after loadMedia(); the open font keeps its size" << std::endl;
+		// the size is fixed when loadMedia() opens the font, so a later change waits for the next loadMedia()
+		log << "setFontSize(" << size << ") was called after loadMedia(); the open font keeps its size until loadMedia() is called again" << std::endl;
 	}
 }
 
