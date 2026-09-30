@@ -127,6 +127,10 @@ of scope before `cleanUp()` runs. A `Text` that is destroyed after `cleanUp()`
 passes its texture to SDL after `SDL_Quit()`. `free()` keeps the label's
 position, so a later `loadText()` redraws the new string in the same place.
 
+`GraphicsEnv` and `Text` own the SDL resources they create, so neither can be
+copied or assigned; pass them by reference or pointer instead. `Button` holds
+no owned resources and remains copyable.
+
 ## Fonts
 
 `GraphicsEnv::loadMedia()` opens the file named by `setFontPath()`, which

@@ -30,6 +30,10 @@ class Text {
 		std::string innerText;
 		SDL_Renderer* renderer;
 		TTF_Font* font;
+
+		// the texture is owned, so a shallow copy would destroy it twice; copying is disallowed
+		Text(const Text&);
+		Text& operator=(const Text&);
 };
 
 #endif
