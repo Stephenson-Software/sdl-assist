@@ -5,6 +5,7 @@ Button::Button() {
 	ypos = 0;
 	width = 0;
 	height = 0;
+	renderer = NULL;
 }
 
 void Button::init(int x, int y, int w, int h, SDL_Renderer* r, void (*funcMouseDown)()) {
