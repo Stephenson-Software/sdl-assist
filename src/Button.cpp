@@ -43,7 +43,7 @@ void Button::handleEvent(SDL_Event* e) {
 		}
 		
 		// if mouse is right of the button
-		else if (x > xpos + width) {
+		else if (x >= xpos + width) {
 			inside = false;
 		}
 		
@@ -53,7 +53,7 @@ void Button::handleEvent(SDL_Event* e) {
 		}
 		
 		// if mouse is below the button
-		else if (y > ypos + height) {
+		else if (y >= ypos + height) {
 			inside = false;
 		}
 		
