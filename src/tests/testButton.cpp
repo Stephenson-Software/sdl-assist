@@ -2,9 +2,6 @@
 
 #include "../header/GraphicsEnv.h"
 
-// create environment
-GraphicsEnv environment;
-
 Text myText;
 Text myText2;
 Text myText3;
