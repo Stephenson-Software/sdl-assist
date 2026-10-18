@@ -1,6 +1,10 @@
 # sdl-assist
 This library abstracts out the handling of Simple DirectMedia Layer, providing support for drawing rectangles, text and buttons to the screen.
 
+![The buttoncallbacks demo: hovering, pressing and releasing the button rewrites the status label](docs/images/buttoncallbacks.gif)
+
+*The `buttoncallbacks` demo, driven by scripted mouse input: the hover, mouse-down and mouse-up callbacks each rewrite the status label.*
+
 ## Dependencies
 
 A C++ compiler (`g++`) and the SDL2 development packages:
@@ -50,6 +54,19 @@ so that the default font path `src/fonts/lazy.ttf` resolves; see
 | `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment, the second after the font is reloaded at a smaller size. |
 | `button` | `testButton.cpp` | `Button` rendering and event handling — clicking the button runs a callback that rewrites a neighbouring `Text` label. |
 | `buttoncallbacks` | `testButtonCallbacks.cpp` | The `Button` callback setters and the `Text` getters — hover, mouse-down and mouse-up callbacks attached with `setHoverFunction`, `setMouseDownFunction` and `setMouseUpFunction` each rewrite a status label, and the title label is outlined and measured using `getX`, `getY`, `getWidth` and `getHeight`. |
+
+### Screenshots
+
+| `rectangles` | `text` | `renderpage` |
+|---|---|---|
+| ![rectangles demo](docs/images/rectangles.gif) | ![text demo](docs/images/text.png) | ![renderpage demo](docs/images/renderpage.png) |
+
+These images were captured from the demo programs above, built from this
+repository and run under a virtual X display. `docs/capture.sh` rebuilds the
+demos, drives them with `xdotool` and regenerates every file in
+`docs/images/`; it needs `Xvfb`, `xdotool` and ImageMagick in addition to the
+SDL2 build dependencies. The pointer drawn in the GIF marks the scripted cursor
+position, since the virtual display does not render a cursor.
 
 ## Usage
 
