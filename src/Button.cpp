@@ -30,9 +30,16 @@ void Button::render() {
 void Button::handleEvent(SDL_Event* e) {
 	// if mouse event happened
 	if (e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) {
-		// get mouse position
+		// get mouse position carried by the event
 		int x, y;
-		SDL_GetMouseState(&x, &y);
+		if (e->type == SDL_MOUSEMOTION) {
+			x = e->motion.x;
+			y = e->motion.y;
+		}
+		else {
+			x = e->button.x;
+			y = e->button.y;
+		}
 		
 		// check if mouse is in button
 		bool inside = true;

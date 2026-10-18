@@ -118,7 +118,9 @@ button.init(100, 200, 50, 50, environment.getRenderer(), &onMouseDown);
 
 Both are rendered inside the main loop with `label.render()` and
 `button.render()`; `button.handleEvent(environment.getEvent())` is called from
-the event loop so the button can react to the mouse.
+the event loop so the button can react to the mouse. Each event is hit-tested
+against the pointer position it carries, not the current mouse state, so every
+queued event drained in one frame is tested where it actually happened.
 
 A `Text` holds an `SDL_Texture` that belongs to the environment's renderer, so
 it must be released before `cleanUp()` destroys that renderer — either by
