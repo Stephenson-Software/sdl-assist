@@ -18,7 +18,7 @@ Xvfb ":$N" -screen 0 1280x800x24 >/dev/null 2>&1 &
 XPID=$!
 trap 'kill $XPID 2>/dev/null; rm -rf "$TMP"' EXIT
 export DISPLAY=":$N"
-sleep 2
+for _ in $(seq 50); do xdotool getdisplaygeometry >/dev/null 2>&1 && break; sleep 0.2; done
 
 # start a demo, wait for its window, print the window id
 launch() {
