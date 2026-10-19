@@ -119,6 +119,8 @@ int main(int argc, char* args[]) {
 `isRunning()` false, so the loop above exits immediately instead of drawing
 through a renderer that was never created. `cleanUp()` may be called more than
 once — the destructor calls it too — and has no further effect after the first.
+A second `init()` while the window is open is reported to `log.txt` and
+otherwise ignored; call `cleanUp()` first to initialize the environment again.
 
 `Text` and `Button` are constructed separately and wired to the environment's
 renderer and font:
