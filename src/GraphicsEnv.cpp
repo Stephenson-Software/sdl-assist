@@ -14,7 +14,13 @@ GraphicsEnv::~GraphicsEnv() { // dtor
 }
 
 // primary methods
-void GraphicsEnv::init() {          
+void GraphicsEnv::init() {
+	if (window != NULL) {
+		// a second init() would reopen the open log and leak the existing window and renderer
+		log << "init() was called while already initialized; call cleanUp() first to reinitialize" << std::endl;
+		return;
+	}
+
 	log.open("log.txt");
 	log << "Initializing!" << std::endl;
 
