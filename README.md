@@ -174,7 +174,10 @@ demo reloads the font this way.
 If the font cannot be opened, the failure and the path that was tried are
 reported to `log.txt` and the environment is left intact: the window opens and
 rectangles draw, but `getFont()` returns `NULL` and any `Text` initialised with
-it renders nothing.
+it renders nothing. `log.txt` is only open between `init()` and `cleanUp()`, so
+a failure from a `loadMedia()` called before `init()`, or after an `init()`
+that failed, is reported through `SDL_LogError()` (standard error by default)
+instead.
 
 ## License
 
