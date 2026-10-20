@@ -66,6 +66,10 @@ void GraphicsEnv::loadMedia() {
 		if (log.is_open()) {
 			log << "Font could not be opened from " << fontPath << "! TTF error: " << TTF_GetError() << std::endl;
 		}
+		else {
+			// the log is only open between init() and cleanUp(), so a call before init() or after a failed init() falls back to SDL's own logging
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Font could not be opened from %s! TTF error: %s", fontPath.c_str(), TTF_GetError());
+		}
 	}
 }
 
