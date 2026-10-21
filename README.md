@@ -122,6 +122,12 @@ once — the destructor calls it too — and has no further effect after the fir
 A second `init()` while the window is open is reported to `log.txt` and
 otherwise ignored; call `cleanUp()` first to initialize the environment again.
 
+`setTitle()`, `setScreenWidth()` and `setScreenHeight()` configure the window
+that `init()` creates. Called while the window is open, they retitle or resize
+it in place, so `getW()` and `getH()` keep describing the real window. A window
+manager may still decline the resize (for example while the window is
+maximized), in which case `getW()` and `getH()` report the requested size.
+
 `Text` and `Button` are constructed separately and wired to the environment's
 renderer and font:
 

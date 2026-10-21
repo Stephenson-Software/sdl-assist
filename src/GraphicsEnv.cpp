@@ -125,14 +125,25 @@ void GraphicsEnv::setRunning(bool b) {
 
 void GraphicsEnv::setScreenWidth(int w) {
 	screenWidth = w;
+	if (window != NULL) {
+		// init() reads the size only once, so an open window is resized to keep getW() truthful
+		SDL_SetWindowSize(window, screenWidth, screenHeight);
+	}
 }
 
 void GraphicsEnv::setScreenHeight(int h) {
 	screenHeight = h;
+	if (window != NULL) {
+		// init() reads the size only once, so an open window is resized to keep getH() truthful
+		SDL_SetWindowSize(window, screenWidth, screenHeight);
+	}
 }
 
 void GraphicsEnv::setTitle(std::string newTitle) {
 	title = newTitle;
+	if (window != NULL) {
+		SDL_SetWindowTitle(window, title.c_str());
+	}
 }
 
 void GraphicsEnv::setFontSize(int size) {
