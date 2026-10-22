@@ -80,7 +80,10 @@ int main(int argc, char* args[]) {
 		
 		// render buttons
 		myButton.render();
-	
+
+		// draw footer; Button::render() restores the color, so the blue set above still applies
+		environment.drawRectangle(0, environment.getH() - 25, environment.getW(), 25);
+
 		// present environment
 		environment.present();
 	}

@@ -146,6 +146,9 @@ Both are rendered inside the main loop with `label.render()` and
 the event loop so the button can react to the mouse. Each event is hit-tested
 against the pointer position it carries, not the current mouse state, so every
 queued event drained in one frame is tested where it actually happened.
+`button.render()` fills the button in black and then restores the draw color
+that was current before it, so a later `clear()` or `drawRectangle()` still
+uses the color last passed to `setRenderColor()`.
 
 A `Text` holds an `SDL_Texture` that belongs to the environment's renderer, so
 it must be released before `cleanUp()` destroys that renderer — either by

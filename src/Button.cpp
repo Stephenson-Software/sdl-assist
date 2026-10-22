@@ -22,9 +22,15 @@ void Button::setRenderer(SDL_Renderer* r) {
 }
 
 void Button::render() {
+	// the draw color is shared renderer state, so the caller's color is restored after the fill
+	Uint8 r = 0, g = 0, b = 0, a = 0;
+	SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
+
 	SDL_Rect fillRect = {xpos, ypos, width, height};
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 	SDL_RenderFillRect(renderer, &fillRect);
+
+	SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
 
 void Button::handleEvent(SDL_Event* e) {
