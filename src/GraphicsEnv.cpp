@@ -29,12 +29,14 @@ void GraphicsEnv::init() {
 		cleanUp();
 		return;
 	}
+	sdlInitialized = true;
 
 	if (TTF_Init() != 0) {
 		log << "SDL_ttf could not initialize! TTF error: " << TTF_GetError() << std::endl;
 		cleanUp();
 		return;
 	}
+	ttfInitialized = true;
 
 	window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
@@ -93,10 +95,23 @@ void GraphicsEnv::cleanUp() {
 		window = NULL;
 	}
 
-	// both are safe to call when the subsystem was never initialized, and
-	// SDL_Quit() is documented as safe after a failed SDL_Init()
-	TTF_Quit();
-	SDL_Quit();
+	// only what this environment's init() acquired is released, so destroying an
+	// uninitialized environment, or a second call, leaves another one running
+	if (ttfInitialized) {
+		TTF_Quit(); // reference-counted by SDL_ttf
+		ttfInitialized = false;
+	}
+
+	if (sdlInitialized) {
+		// unlike SDL_Quit(), SDL_QuitSubSystem() is reference-counted
+		SDL_QuitSubSystem(SDL_INIT_VIDEO);
+		sdlInitialized = false;
+
+		// the last environment out still shuts SDL down fully
+		if (SDL_WasInit(SDL_INIT_EVERYTHING) == 0) {
+			SDL_Quit();
+		}
+	}
 
 	running = false;
 

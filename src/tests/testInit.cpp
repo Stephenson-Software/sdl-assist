@@ -16,7 +16,12 @@ int main(int argc, char* args[]) {
 	
 	// load media
 	environment.loadMedia();
-	
+
+	// an environment that is never initialized must not shut SDL down for this one when it is destroyed
+	{
+		GraphicsEnv unused;
+	}
+
 	// main loop
 	while (environment.isRunning()) {
 		while (environment.pollEvent() != 0) {
