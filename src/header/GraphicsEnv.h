@@ -67,7 +67,11 @@ class GraphicsEnv {
 	SDL_Event event;
 	
 	bool running;
-	
+
+	// whether init() brought up SDL video and SDL_ttf, so cleanUp() releases only what this environment acquired
+	bool sdlInitialized = false;
+	bool ttfInitialized = false;
+
 	std::ofstream log;
 
 	// the window, renderer and font are owned, so a shallow copy would destroy them twice; copying is disallowed

@@ -48,7 +48,7 @@ so that the default font path `src/fonts/lazy.ttf` resolves; see
 
 | Target | Source | What it demonstrates |
 |--------|--------|----------------------|
-| `init` | `testInit.cpp` | The minimal lifecycle: a 400x400 window with one black rectangle centered on a white background. |
+| `init` | `testInit.cpp` | The minimal lifecycle: a 400x400 window with one black rectangle centered on a white background, which keeps drawing after a second, never-initialized environment is destroyed. |
 | `rectangles` | `testRectangles.cpp` | Animation via `drawRectangle` — a black square moves toward a small green target that relocates to a random position each time it is reached. |
 | `renderpage` | `testRenderPage.cpp` | Layout with rectangles — header, body and footer bands drawn in three shades of blue. |
 | `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment, the second after the font is reloaded at a smaller size. |
@@ -119,6 +119,10 @@ int main(int argc, char* args[]) {
 `isRunning()` false, so the loop above exits immediately instead of drawing
 through a renderer that was never created. `cleanUp()` may be called more than
 once — the destructor calls it too — and has no further effect after the first.
+It shuts down only the SDL and SDL_ttf initialization that this environment's
+own `init()` performed, so destroying an environment that was never
+initialized, or cleaning up one of two environments, leaves the other running;
+SDL is shut down completely once no initialized environment remains.
 A second `init()` while the window is open is reported to `log.txt` and
 otherwise ignored; call `cleanUp()` first to initialize the environment again.
 
