@@ -6,7 +6,6 @@ Text::Text() {
 	width = 0;
 	height = 0;
 	texture = NULL;
-	innerText = "";
 	renderer = NULL;
 	font = NULL;
 }

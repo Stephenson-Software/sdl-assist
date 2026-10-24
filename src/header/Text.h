@@ -27,7 +27,6 @@ class Text {
 		int width;
 		int height;
 		SDL_Texture* texture;
-		std::string innerText;
 		SDL_Renderer* renderer;
 		TTF_Font* font;
 

@@ -47,31 +47,11 @@ void Button::handleEvent(SDL_Event* e) {
 			y = e->button.y;
 		}
 		
-		// check if mouse is in button
-		bool inside = true;
-		
-		// if mouse is left of the button
-		if (x < xpos) {
-			inside = false;
-		}
-		
-		// if mouse is right of the button
-		else if (x >= xpos + width) {
-			inside = false;
-		}
-		
-		// if mouse is above the button
-		else if (y < ypos) {
-			inside = false;
-		}
-		
-		// if mouse is below the button
-		else if (y >= ypos + height) {
-			inside = false;
-		}
-		
+		// check if mouse is in button; the right and bottom edges lie just outside it
+		bool inside = x >= xpos && x < xpos + width && y >= ypos && y < ypos + height;
+
 		// mouse is inside button
-		else {
+		if (inside) {
 			// set mouse over sprite
 			switch (e->type) {
 				case SDL_MOUSEMOTION:
