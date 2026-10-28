@@ -44,7 +44,8 @@ void Text::loadText(std::string textToRender, SDL_Color textColor) {
 		return;
 	}
 	SDL_Texture* newTexture = NULL;
-	SDL_Surface* temp_surface = TTF_RenderText_Solid(font, textToRender.c_str(), textColor);
+	// the string is decoded as UTF-8, matching C++ string literals; TTF_RenderText_Solid() would read it as Latin-1
+	SDL_Surface* temp_surface = TTF_RenderUTF8_Solid(font, textToRender.c_str(), textColor);
 	if (temp_surface == NULL) {
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Text::loadText() could not render text: %s", TTF_GetError());
 		return;

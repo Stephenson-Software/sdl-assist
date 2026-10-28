@@ -20,7 +20,8 @@ void myButtonFunc() {
 		myText3.loadText("Again?", textColor);
 	}
 	else if (timesClicked == 3) {
-		myText3.loadText("Jeepers", textColor);
+		// the em dash is outside Latin-1, so it is drawn as one glyph only when the label is decoded as UTF-8
+		myText3.loadText("Jeepers — three", textColor);
 	};
 	// the label keeps the position given to init(); no setPosition() is needed after a reload
 }
