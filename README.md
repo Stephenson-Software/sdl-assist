@@ -160,7 +160,7 @@ calling `label.free()` first, as the demos do, or by letting the `Text` go out
 of scope before `cleanUp()` runs. A `Text` that is destroyed after `cleanUp()`
 passes its texture to SDL after `SDL_Quit()`. `free()` keeps the label's
 position, so a later `loadText()` redraws the new string in the same place.
-`init()` and `loadText()` read the string as UTF-8, the encoding `g++` uses for
+`label.init()` and `label.loadText()` read the string as UTF-8, the encoding `g++` uses for
 string literals, so characters outside ASCII, such as `é` or `—`, are drawn as
 single glyphs when the font has them.
 
