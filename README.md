@@ -51,7 +51,7 @@ so that the default font path `src/fonts/lazy.ttf` resolves; see
 | `init` | `testInit.cpp` | The minimal lifecycle: a 400x400 window with one black rectangle centered on a white background, which keeps drawing after a second, never-initialized environment is destroyed. |
 | `rectangles` | `testRectangles.cpp` | Animation via `drawRectangle` — a black square moves toward a small green target that relocates to a random position each time it is reached. |
 | `renderpage` | `testRenderPage.cpp` | Layout with rectangles — header, body and footer bands drawn in three shades of blue. |
-| `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment, the second after the font is reloaded at a smaller size. |
+| `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment, the second after the font is reloaded at a smaller size, plus a third, empty label that draws nothing. |
 | `button` | `testButton.cpp` | `Button` rendering and event handling — clicking the button runs a callback that rewrites a neighbouring `Text` label. |
 | `buttoncallbacks` | `testButtonCallbacks.cpp` | The `Button` callback setters and the `Text` getters — hover, mouse-down and mouse-up callbacks attached with `setHoverFunction`, `setMouseDownFunction` and `setMouseUpFunction` each rewrite a status label, and the title label is outlined and measured using `getX`, `getY`, `getWidth` and `getHeight`. |
 
@@ -162,7 +162,9 @@ passes its texture to SDL after `SDL_Quit()`. `free()` keeps the label's
 position, so a later `loadText()` redraws the new string in the same place.
 `label.init()` and `label.loadText()` read the string as UTF-8, the encoding `g++` uses for
 string literals, so characters outside ASCII, such as `é` or `—`, are drawn as
-single glyphs when the font has them.
+single glyphs when the font has them. An empty string is valid: it clears the
+label, which then draws nothing and reports a width and height of 0, without
+logging an error.
 
 `GraphicsEnv` and `Text` own the SDL resources they create, so neither can be
 copied or assigned; pass them by reference or pointer instead. `Button` holds

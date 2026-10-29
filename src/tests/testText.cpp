@@ -37,7 +37,11 @@ int main(int argc, char* args[]) {
 	Text myText2;
 	textColor = {0x00, 0x00, 0x00, 0xFF};
 	myText2.init(25, 75, environment.getFont(), environment.getRenderer(), "Text Support", textColor);
-	
+
+	// an empty label is valid: it draws nothing and reports no error
+	Text emptyText;
+	emptyText.init(25, 125, environment.getFont(), environment.getRenderer(), "", textColor);
+
 	// main loop
 	while (environment.isRunning()) {
 		while (environment.pollEvent() != 0) {
@@ -56,7 +60,8 @@ int main(int argc, char* args[]) {
 		// render text
 		myText.render();
 		myText2.render();
-	
+		emptyText.render();
+
 		// present environment
 		environment.present();
 	}
@@ -64,6 +69,7 @@ int main(int argc, char* args[]) {
 	// release the textures while their renderer still exists
 	myText.free();
 	myText2.free();
+	emptyText.free();
 
 	// clean up environment
 	environment.cleanUp();
