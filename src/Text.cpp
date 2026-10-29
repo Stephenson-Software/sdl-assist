@@ -43,6 +43,10 @@ void Text::loadText(std::string textToRender, SDL_Color textColor) {
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Text::loadText() was given a NULL font");
 		return;
 	}
+	if (textToRender.empty()) {
+		// SDL_ttf rejects zero-width text as an error, but an empty label is valid; free() has already cleared it
+		return;
+	}
 	SDL_Texture* newTexture = NULL;
 	// the string is decoded as UTF-8, matching C++ string literals; TTF_RenderText_Solid() would read it as Latin-1
 	SDL_Surface* temp_surface = TTF_RenderUTF8_Solid(font, textToRender.c_str(), textColor);
