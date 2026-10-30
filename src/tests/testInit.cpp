@@ -29,8 +29,8 @@ int main(int argc, char* args[]) {
 				environment.setRunning(false);
 			}
 		}
-		// clear environment
-		environment.setRenderColor(0xFF, 0xFF, 0xFF, 0XFF);
+		// clear environment; a channel above 0xFF is clamped, so this still clears to white rather than wrapping to black
+		environment.setRenderColor(0x100, 0x100, 0x100, 0x100);
 		environment.clear();
 		
 		// draw rectangle
