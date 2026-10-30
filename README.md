@@ -48,7 +48,7 @@ so that the default font path `src/fonts/lazy.ttf` resolves; see
 
 | Target | Source | What it demonstrates |
 |--------|--------|----------------------|
-| `init` | `testInit.cpp` | The minimal lifecycle: a 400x400 window with one black rectangle centered on a white background, which keeps drawing after a second, never-initialized environment is destroyed. |
+| `init` | `testInit.cpp` | The minimal lifecycle: a 400x400 window with one black rectangle centered on a white background, which keeps drawing after a second, never-initialized environment is destroyed. The background is cleared with channels of `0x100`, which only comes out white because `setRenderColor()` clamps them. |
 | `rectangles` | `testRectangles.cpp` | Animation via `drawRectangle` — a black square moves toward a small green target that relocates to a random position each time it is reached. |
 | `renderpage` | `testRenderPage.cpp` | Layout with rectangles — header, body and footer bands drawn in three shades of blue. |
 | `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment, the second after the font is reloaded at a smaller size, plus a third, empty label that draws nothing. |
@@ -131,6 +131,11 @@ that `init()` creates. Called while the window is open, they retitle or resize
 it in place, so `getW()` and `getH()` keep describing the real window. A window
 manager may still decline the resize (for example while the window is
 maximized), in which case `getW()` and `getH()` report the requested size.
+
+`setRenderColor()` takes each channel as an `int` from 0 to 255. A value
+outside that range is clamped to the nearest end of it rather than wrapping, so
+a fade that overshoots stops at 0 or 255 instead of jumping to the opposite
+intensity.
 
 `Text` and `Button` are constructed separately and wired to the environment's
 renderer and font:

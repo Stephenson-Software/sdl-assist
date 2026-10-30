@@ -191,8 +191,20 @@ TTF_Font* GraphicsEnv::getFont() {
 }
 
 // rendering methods
+
+// narrowing an int straight to Uint8 would wrap an out-of-range channel to an unrelated value, so it is clamped instead
+static Uint8 clampChannel(int value) {
+	if (value < 0) {
+		return 0;
+	}
+	if (value > 0xFF) {
+		return 0xFF;
+	}
+	return (Uint8) value;
+}
+
 void GraphicsEnv::setRenderColor(int r, int g, int b, int a) {
-	SDL_SetRenderDrawColor(renderer, r, g, b, a);
+	SDL_SetRenderDrawColor(renderer, clampChannel(r), clampChannel(g), clampChannel(b), clampChannel(a));
 }
 
 void GraphicsEnv::clear() {
