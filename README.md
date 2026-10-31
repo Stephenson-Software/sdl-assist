@@ -159,6 +159,22 @@ queued event drained in one frame is tested where it actually happened.
 that was current before it, so a later `clear()` or `drawRectangle()` still
 uses the color last passed to `setRenderColor()`.
 
+A `Button` has three callbacks: the mouse-down callback passed to `init()`, and
+the ones attached with `setHoverFunction()`, `setMouseDownFunction()` and
+`setMouseUpFunction()`. `handleEvent()` calls each one directly, before it
+returns. A callback left `NULL`, including a `NULL` passed to `init()`, is
+skipped. The callbacks run on these conditions:
+
+- **Hover** runs on every mouse-motion event inside the button, not once when
+  the pointer enters it, so it can run many times per frame. No callback runs
+  when the pointer leaves. A hover callback that rebuilds a `Text` should skip
+  the rebuild when the text has not changed, as the `buttoncallbacks` demo does.
+- **Mouse-down** and **mouse-up** run for any mouse button (left, middle, right
+  or an extra button), since the event's button is not checked.
+- Each event is tested on its own, with no memory of earlier events. Mouse-up
+  runs when the release happens inside the button, even if the press happened
+  outside it. A press inside followed by a release outside runs mouse-down only.
+
 A `Text` holds an `SDL_Texture` that belongs to the environment's renderer, so
 it must be released before `cleanUp()` destroys that renderer — either by
 calling `label.free()` first, as the demos do, or by letting the `Text` go out
