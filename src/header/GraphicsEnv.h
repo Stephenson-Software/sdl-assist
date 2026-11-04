@@ -74,6 +74,8 @@ class GraphicsEnv {
 
 	std::ofstream log;
 
+	void reportError(std::string message);
+
 	// the window, renderer and font are owned, so a shallow copy would destroy them twice; copying is disallowed
 	GraphicsEnv(const GraphicsEnv&);
 	GraphicsEnv& operator=(const GraphicsEnv&);

@@ -17,22 +17,25 @@ GraphicsEnv::~GraphicsEnv() { // dtor
 void GraphicsEnv::init() {
 	if (window != NULL) {
 		// a second init() would reopen the open log and leak the existing window and renderer
-		log << "init() was called while already initialized; call cleanUp() first to reinitialize" << std::endl;
+		reportError("init() was called while already initialized; call cleanUp() first to reinitialize");
 		return;
 	}
 
 	log.open("log.txt");
+	if (!log.is_open()) {
+		reportError("log.txt could not be opened; failures will be reported through SDL_LogError() instead");
+	}
 	log << "Initializing!" << std::endl;
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		log << "SDL could not initialize! SDL error: " << SDL_GetError() << std::endl;
+		reportError(std::string("SDL could not initialize! SDL error: ") + SDL_GetError());
 		cleanUp();
 		return;
 	}
 	sdlInitialized = true;
 
 	if (TTF_Init() != 0) {
-		log << "SDL_ttf could not initialize! TTF error: " << TTF_GetError() << std::endl;
+		reportError(std::string("SDL_ttf could not initialize! TTF error: ") + TTF_GetError());
 		cleanUp();
 		return;
 	}
@@ -40,14 +43,14 @@ void GraphicsEnv::init() {
 
 	window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
-		log << "Window could not be created! SDL error: " << SDL_GetError() << std::endl;
+		reportError(std::string("Window could not be created! SDL error: ") + SDL_GetError());
 		cleanUp();
 		return;
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (renderer == NULL) {
-		log << "Renderer could not be created! SDL error: " << SDL_GetError() << std::endl;
+		reportError(std::string("Renderer could not be created! SDL error: ") + SDL_GetError());
 		cleanUp();
 		return;
 	}
@@ -65,13 +68,7 @@ void GraphicsEnv::loadMedia() {
 	font = TTF_OpenFont(fontPath.c_str(), fontSize); // the path is resolved against the working directory
 	if (font == NULL) {
 		// the environment stays usable without a font; reporting is enough
-		if (log.is_open()) {
-			log << "Font could not be opened from " << fontPath << "! TTF error: " << TTF_GetError() << std::endl;
-		}
-		else {
-			// the log is only open between init() and cleanUp(), so a call before init() or after a failed init() falls back to SDL's own logging
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Font could not be opened from %s! TTF error: %s", fontPath.c_str(), TTF_GetError());
-		}
+		reportError("Font could not be opened from " + fontPath + "! TTF error: " + TTF_GetError());
 	}
 }
 
@@ -163,9 +160,9 @@ void GraphicsEnv::setTitle(std::string newTitle) {
 
 void GraphicsEnv::setFontSize(int size) {
 	fontSize = size;
-	if (font != NULL && log.is_open()) {
+	if (font != NULL) {
 		// the size is fixed when loadMedia() opens the font, so a later change waits for the next loadMedia()
-		log << "setFontSize(" << size << ") was called after loadMedia(); the open font keeps its size until loadMedia() is called again" << std::endl;
+		reportError("setFontSize(" + std::to_string(size) + ") was called after loadMedia(); the open font keeps its size until loadMedia() is called again");
 	}
 }
 
@@ -219,4 +216,15 @@ void GraphicsEnv::present() {
 void GraphicsEnv::drawRectangle(int x, int y, int w, int h) {
 	SDL_Rect fillRect = {x, y, w, h};		
 	SDL_RenderFillRect(renderer, &fillRect); // draw color using rect
+}
+
+// private methods
+void GraphicsEnv::reportError(std::string message) {
+	if (log.is_open()) {
+		log << message << std::endl;
+	}
+	else {
+		// the log is closed outside init()..cleanUp(), and stays closed if log.txt could not be opened, so SDL's own logging is used
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "%s", message.c_str());
+	}
 }
