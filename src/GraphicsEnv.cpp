@@ -224,7 +224,8 @@ void GraphicsEnv::reportError(std::string message) {
 		log << message << std::endl;
 	}
 	else {
-		// the log is closed outside init()..cleanUp(), and stays closed if log.txt could not be opened, so SDL's own logging is used
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "%s", message.c_str());
+		// the log is closed outside init()..cleanUp(), and stays closed if log.txt could not be opened, so SDL's own logging is used;
+		// the application category defaults to the INFO priority, so an ERROR message is printed rather than filtered out
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", message.c_str());
 	}
 }
