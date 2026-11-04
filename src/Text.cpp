@@ -40,7 +40,7 @@ void Text::loadText(std::string textToRender, SDL_Color textColor) {
 	free();
 	if (font == NULL) {
 		// Text has no log stream of its own, so SDL's own logging is used
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Text::loadText() was given a NULL font");
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Text::loadText() was given a NULL font");
 		return;
 	}
 	if (textToRender.empty()) {
@@ -51,12 +51,12 @@ void Text::loadText(std::string textToRender, SDL_Color textColor) {
 	// the string is decoded as UTF-8, matching C++ string literals; TTF_RenderText_Solid() would read it as Latin-1
 	SDL_Surface* temp_surface = TTF_RenderUTF8_Solid(font, textToRender.c_str(), textColor);
 	if (temp_surface == NULL) {
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Text::loadText() could not render text: %s", TTF_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Text::loadText() could not render text: %s", TTF_GetError());
 		return;
 	}
 	newTexture = SDL_CreateTextureFromSurface(renderer, temp_surface);
 	if (newTexture == NULL) {
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Text::loadText() could not create texture: %s", SDL_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Text::loadText() could not create texture: %s", SDL_GetError());
 		SDL_FreeSurface(temp_surface);
 		return;
 	}

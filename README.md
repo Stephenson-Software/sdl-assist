@@ -115,7 +115,8 @@ int main(int argc, char* args[]) {
 }
 ```
 
-`init()` reports any SDL or SDL_ttf failure to `log.txt` and leaves
+`init()` creates `log.txt` in the working directory, replacing the file from any
+earlier run. It reports any SDL or SDL_ttf failure there and leaves
 `isRunning()` false, so the loop above exits immediately instead of drawing
 through a renderer that was never created. `cleanUp()` may be called more than
 once — the destructor calls it too — and has no further effect after the first.
@@ -125,6 +126,11 @@ initialized, or cleaning up one of two environments, leaves the other running;
 SDL is shut down completely once no initialized environment remains.
 A second `init()` while the window is open is reported to `log.txt` and
 otherwise ignored; call `cleanUp()` first to initialize the environment again.
+
+If `log.txt` cannot be opened (for example in a read-only working directory),
+`init()` still continues. That failure, and every later report that would have
+gone to `log.txt`, is sent through `SDL_LogError()` (standard error by default)
+instead.
 
 `setTitle()`, `setScreenWidth()` and `setScreenHeight()` configure the window
 that `init()` creates. Called while the window is open, they retitle or resize
@@ -215,8 +221,7 @@ reported to `log.txt` and the environment is left intact: the window opens and
 rectangles draw, but `getFont()` returns `NULL` and any `Text` initialised with
 it renders nothing. `log.txt` is only open between `init()` and `cleanUp()`, so
 a failure from a `loadMedia()` called before `init()`, or after an `init()`
-that failed, is reported through `SDL_LogError()` (standard error by default)
-instead.
+that failed, is reported through `SDL_LogError()` instead.
 
 ## License
 
