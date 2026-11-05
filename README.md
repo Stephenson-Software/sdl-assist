@@ -132,6 +132,13 @@ If `log.txt` cannot be opened (for example in a read-only working directory),
 gone to `log.txt`, is sent through `SDL_LogError()` (standard error by default)
 instead.
 
+`init()` asks for a hardware-accelerated renderer with vsync. If that cannot be
+created (for example on a machine with no GPU driver), the reason is reported
+and `init()` retries with any renderer SDL can provide, including its software
+one, and fails only if that retry fails too. The fallback renderer does not
+request vsync, so `present()` may not wait for the display and a main loop that
+relies on it for pacing can run much faster.
+
 `setTitle()`, `setScreenWidth()` and `setScreenHeight()` configure the window
 that `init()` creates. Called while the window is open, they retitle or resize
 it in place, so `getW()` and `getH()` keep describing the real window. A window

@@ -50,6 +50,11 @@ void GraphicsEnv::init() {
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (renderer == NULL) {
+		// SDL's software renderer never matches the accelerated flag, so it is only reachable by asking again without it
+		reportError(std::string("Accelerated renderer unavailable, falling back to any available renderer without vsync. SDL error: ") + SDL_GetError());
+		renderer = SDL_CreateRenderer(window, -1, 0);
+	}
+	if (renderer == NULL) {
 		reportError(std::string("Renderer could not be created! SDL error: ") + SDL_GetError());
 		cleanUp();
 		return;
