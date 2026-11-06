@@ -127,6 +127,29 @@ SDL is shut down completely once no initialized environment remains.
 A second `init()` while the window is open is reported to `log.txt` and
 otherwise ignored; call `cleanUp()` first to initialize the environment again.
 
+Initializing again starts from nothing. `cleanUp()` destroys the renderer and
+closes the font, so `getRenderer()` returns a new pointer after the next
+`init()`, and `getFont()` returns `NULL` until `loadMedia()` runs again. A
+`Text` or `Button` keeps the pointers it was given and is not told about any of
+this, so those pointers must not be used once `cleanUp()` has run. After
+initializing again, give each `Button` the new renderer with
+`button.setRenderer()`, and each `Text` its new pointers with `label.init()`,
+or with `label.setRenderer()` and `label.setFont()` followed by
+`label.loadText()`.
+
+`setRenderColor()`, `clear()`, `present()` and `drawRectangle()` act on the
+renderer, so they need `init()` to have succeeded. Without a renderer (before
+`init()`, after it failed, or after `cleanUp()`) they do nothing and report
+nothing, and the color is not remembered for a later `init()`.
+
+`setRunning(false)` only clears the flag that `isRunning()` returns: the window
+stays open until `cleanUp()`.
+
+`pollEvent()` copies the next queued event into a single `SDL_Event` held by
+the environment, and `getEvent()` returns a pointer to it, so each successful
+`pollEvent()` overwrites what an earlier `getEvent()` pointed at. Copy the
+`SDL_Event` to keep it for longer.
+
 If `log.txt` cannot be opened (for example in a read-only working directory),
 `init()` still continues. That failure, and every later report that would have
 gone to `log.txt`, is sent through `SDL_LogError()` (standard error by default)
@@ -199,6 +222,18 @@ string literals, so characters outside ASCII, such as `é` or `—`, are drawn a
 single glyphs when the font has them. An empty string is valid: it clears the
 label, which then draws nothing and reports a width and height of 0, without
 logging an error.
+
+`label.setPosition()` applies from the next `label.render()`. `label.setFont()`
+and `label.setRenderer()` only store the pointer for the next `loadText()`: the
+label keeps the texture it already has, so a new font changes nothing on screen
+until then, and a label pointed at a different renderer draws nothing until
+then, because SDL does not draw a texture with any renderer but its own.
+
+`Text` cannot reach the environment's `log.txt`. A `NULL` font, a failed render
+or a failed texture is reported through `SDL_LogError()` (standard error by
+default) instead. The previous string is released before the new one is
+attempted, so after any of these failures the label is empty: it draws nothing
+and reports a width and height of 0.
 
 `GraphicsEnv` and `Text` own the SDL resources they create, so neither can be
 copied or assigned; pass them by reference or pointer instead. `Button` holds
