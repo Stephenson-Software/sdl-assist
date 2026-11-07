@@ -2,8 +2,6 @@
 
 GraphicsEnv environment;
 
-Text headerText;
-
 void renderHeader() {
 	environment.setRenderColor(0x75, 0xBB, 0xFD, 0xFF); // sky blue
 	environment.drawRectangle(0, 0, environment.getW(), environment.getH()/10);
@@ -25,12 +23,8 @@ void drawBackground() {
 	renderFooter();
 }
 
-void drawTextBox() {
-	// TODO
-}
-
 int main(int argc, char* args[]) {
-	environment.setTitle("GraphicsEnv Test 1");
+	environment.setTitle("GraphicsEnv Test 4");
 	environment.setScreenWidth(1000);
 	environment.setScreenHeight(700);
 	
@@ -48,7 +42,6 @@ int main(int argc, char* args[]) {
 		environment.clear();
 		
 		drawBackground();
-		drawTextBox();
 		
 		environment.present();
 	}

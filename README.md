@@ -48,7 +48,7 @@ so that the default font path `src/fonts/lazy.ttf` resolves; see
 
 | Target | Source | What it demonstrates |
 |--------|--------|----------------------|
-| `init` | `testInit.cpp` | The minimal lifecycle: a 400x400 window with one black rectangle centered on a white background, which keeps drawing after a second, never-initialized environment is destroyed. The background is cleared with channels of `0x100`, which only comes out white because `setRenderColor()` clamps them. |
+| `init` | `testInit.cpp` | The minimal lifecycle: a 400x400 window with one black rectangle centered on a white background, which keeps drawing after a second, never-initialized environment is destroyed. A zero width and a negative height are requested before `init()` and ignored, so the window keeps its size. The background is cleared with channels of `0x100`, which only comes out white because `setRenderColor()` clamps them. |
 | `rectangles` | `testRectangles.cpp` | Animation via `drawRectangle` — a black square moves toward a small green target that relocates to a random position each time it is reached. |
 | `renderpage` | `testRenderPage.cpp` | Layout with rectangles — header, body and footer bands drawn in three shades of blue. |
 | `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment, the second after the font is reloaded at a smaller size, plus a third, empty label that draws nothing. |
@@ -148,7 +148,9 @@ stays open until `cleanUp()`.
 `pollEvent()` copies the next queued event into a single `SDL_Event` held by
 the environment, and `getEvent()` returns a pointer to it, so each successful
 `pollEvent()` overwrites what an earlier `getEvent()` pointed at. Copy the
-`SDL_Event` to keep it for longer.
+`SDL_Event` to keep it for longer. Until the first successful `pollEvent()` the
+event is zeroed, so its `type` is `SDL_FIRSTEVENT` and `button.handleEvent()`
+ignores it.
 
 If `log.txt` cannot be opened (for example in a read-only working directory),
 `init()` still continues. That failure, and every later report that would have
@@ -166,7 +168,10 @@ relies on it for pacing can run much faster.
 that `init()` creates. Called while the window is open, they retitle or resize
 it in place, so `getW()` and `getH()` keep describing the real window. A window
 manager may still decline the resize (for example while the window is
-maximized), in which case `getW()` and `getH()` report the requested size.
+maximized), in which case `getW()` and `getH()` report the requested size. A
+width or height of zero or less is never applied: it is reported to `log.txt`,
+or through `SDL_LogError()` while the log is closed, and the previous size is
+kept.
 
 `setRenderColor()` takes each channel as an `int` from 0 to 255. A value
 outside that range is clamped to the nearest end of it rather than wrapping, so

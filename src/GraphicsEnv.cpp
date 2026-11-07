@@ -7,6 +7,7 @@ GraphicsEnv::GraphicsEnv() {
 	screenHeight = 480;
 	fontPath = "src/fonts/lazy.ttf"; // the shipped font, relative to the repository root
 	running = false;
+	SDL_zero(event); // getEvent() hands this out before the first pollEvent() fills it; SDL_FIRSTEVENT matches no handler
 }
 
 GraphicsEnv::~GraphicsEnv() { // dtor
@@ -141,6 +142,12 @@ void GraphicsEnv::setRunning(bool b) {
 }
 
 void GraphicsEnv::setScreenWidth(int w) {
+	if (w <= 0) {
+		// SDL would not give a window this size, so storing it would leave getW() describing no real window
+		reportError("setScreenWidth(" + std::to_string(w) + ") was ignored; the width must be positive");
+		return;
+	}
+
 	screenWidth = w;
 	if (window != NULL) {
 		// init() reads the size only once, so an open window is resized to keep getW() truthful
@@ -149,6 +156,12 @@ void GraphicsEnv::setScreenWidth(int w) {
 }
 
 void GraphicsEnv::setScreenHeight(int h) {
+	if (h <= 0) {
+		// SDL would not give a window this size, so storing it would leave getH() describing no real window
+		reportError("setScreenHeight(" + std::to_string(h) + ") was ignored; the height must be positive");
+		return;
+	}
+
 	screenHeight = h;
 	if (window != NULL) {
 		// init() reads the size only once, so an open window is resized to keep getH() truthful

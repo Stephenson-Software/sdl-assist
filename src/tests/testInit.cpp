@@ -10,7 +10,11 @@ int main(int argc, char* args[]) {
 	// set width and height of the screen
 	environment.setScreenWidth(400);
 	environment.setScreenHeight(400);
-	
+
+	// a non-positive size is reported and ignored, so the window stays 400x400 with the rectangle centered
+	environment.setScreenWidth(0);
+	environment.setScreenHeight(-1);
+
 	// initialize
 	environment.init();
 	
