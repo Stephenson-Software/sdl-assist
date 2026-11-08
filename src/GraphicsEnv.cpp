@@ -177,6 +177,12 @@ void GraphicsEnv::setTitle(std::string newTitle) {
 }
 
 void GraphicsEnv::setFontSize(int size) {
+	if (size <= 0) {
+		// a point size of zero or less names no real font size, so it is kept from the next loadMedia() rather than left to SDL_ttf
+		reportError("setFontSize(" + std::to_string(size) + ") was ignored; the font size must be positive");
+		return;
+	}
+
 	fontSize = size;
 	if (font != NULL) {
 		// the size is fixed when loadMedia() opens the font, so a later change waits for the next loadMedia()

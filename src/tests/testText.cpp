@@ -20,6 +20,9 @@ int main(int argc, char* args[]) {
 	// set font size; this must precede loadMedia(), which fixes the size when it opens the font
 	environment.setFontSize(32);
 
+	// a size of zero or less is reported and ignored, so the font still opens at 32
+	environment.setFontSize(0);
+
 	// load media
 	environment.loadMedia();
 
