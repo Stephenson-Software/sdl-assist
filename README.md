@@ -51,7 +51,7 @@ so that the default font path `src/fonts/lazy.ttf` resolves; see
 | `init` | `testInit.cpp` | The minimal lifecycle: a 400x400 window with one black rectangle centered on a white background, which keeps drawing after a second, never-initialized environment is destroyed. A zero width and a negative height are requested before `init()` and ignored, so the window keeps its size. The background is cleared with channels of `0x100`, which only comes out white because `setRenderColor()` clamps them. |
 | `rectangles` | `testRectangles.cpp` | Animation via `drawRectangle` — a black square moves toward a small green target that relocates to a random position each time it is reached. |
 | `renderpage` | `testRenderPage.cpp` | Layout with rectangles — header, body and footer bands drawn in three shades of blue. |
-| `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment, the second after the font is reloaded at a smaller size, plus a third, empty label that draws nothing. |
+| `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment, the second after the font is reloaded at a smaller size, plus a third, empty label that draws nothing. A font size of 0 is requested before the first `loadMedia()` and ignored, so the first label is still drawn at 32. |
 | `button` | `testButton.cpp` | `Button` rendering and event handling — clicking the button runs a callback that rewrites a neighbouring `Text` label. |
 | `buttoncallbacks` | `testButtonCallbacks.cpp` | The `Button` callback setters and the `Text` getters — hover, mouse-down and mouse-up callbacks attached with `setHoverFunction`, `setMouseDownFunction` and `setMouseUpFunction` each rewrite a status label, and the title label is outlined and measured using `getX`, `getY`, `getWidth` and `getHeight`. |
 
@@ -254,7 +254,9 @@ working directory; a consuming application should call
 that is valid from wherever it is launched. `setFontSize()` must also precede
 `loadMedia()`, since the size is fixed when the font is opened; a call made
 after the font is open is reported to `log.txt` and leaves the open font at its
-original size until `loadMedia()` is called again.
+original size until `loadMedia()` is called again. A size of zero or less is
+never applied: it is reported to `log.txt`, or through `SDL_LogError()` while
+the log is closed, and the previous size is kept.
 
 Calling `loadMedia()` a second time closes the font it opened before and opens
 the current path and size in its place, so `getFont()` then returns a new
