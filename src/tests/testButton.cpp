@@ -26,6 +26,14 @@ void myButtonFunc() {
 	// the label keeps the position given to init(); no setPosition() is needed after a reload
 }
 
+// builds the labels from the environment's current font and renderer
+void initLabels(GraphicsEnv& environment) {
+	SDL_Color textColor = {0x00, 0x00, 0x00, 0xFF};
+	myText.init(25, 25, environment.getFont(), environment.getRenderer(), "GraphicsEnv Test 3:", textColor);
+	myText2.init(25, 75, environment.getFont(), environment.getRenderer(), "Button Support", textColor);
+	myText3.init(160, 200, environment.getFont(), environment.getRenderer(), "<--- A Button", textColor);
+}
+
 int main(int argc, char* args[]) {
 	// create environment
 	GraphicsEnv environment;
@@ -45,19 +53,25 @@ int main(int argc, char* args[]) {
 	
 	// load media
 	environment.loadMedia();
-	
 
-	SDL_Color textColor = {0x00, 0x00, 0x00, 0xFF};
-	myText.init(25, 25, environment.getFont(), environment.getRenderer(), "GraphicsEnv Test 3:", textColor);
-	
-	textColor = {0x00, 0x00, 0x00, 0xFF};
-	myText2.init(25, 75, environment.getFont(), environment.getRenderer(), "Button Support", textColor);
-	
+	initLabels(environment);
 	myButton.init(100, 200, 50, 50, environment.getRenderer(), &myButtonFunc);
 
-	textColor = {0x00, 0x00, 0x00, 0xFF};
-	myText3.init(160, 200, environment.getFont(), environment.getRenderer(), "<--- A Button", textColor);
-	
+	// initialize a second time, as a program that recreates its window would;
+	// the textures belong to the first renderer, so they are released before cleanUp() destroys it
+	myText.free();
+	myText2.free();
+	myText3.free();
+	environment.cleanUp();
+
+	// the title, size and font size set above are kept, so the new window matches the first
+	environment.init();
+	environment.loadMedia();
+
+	// the labels and the button still hold the destroyed renderer and the closed font, so each is given the new ones
+	initLabels(environment);
+	myButton.setRenderer(environment.getRenderer());
+
 	// main loop
 	while (environment.isRunning()) {
 		while (environment.pollEvent() != 0) {
