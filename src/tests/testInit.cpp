@@ -18,8 +18,16 @@ int main(int argc, char* args[]) {
 	// initialize
 	environment.init();
 	
+	// a font that cannot be opened is reported to log.txt and leaves the environment usable, with getFont() returning NULL
+	environment.setFontPath("src/fonts/missing.ttf");
+
 	// load media
 	environment.loadMedia();
+
+	// a label given the NULL font reports through SDL_LogError() and draws nothing, while the rectangle below still draws
+	Text label;
+	SDL_Color textColor = {0x00, 0x00, 0x00, 0xFF};
+	label.init(25, 25, environment.getFont(), environment.getRenderer(), "Never drawn", textColor);
 
 	// an environment that is never initialized must not shut SDL down for this one when it is destroyed
 	{
@@ -40,11 +48,17 @@ int main(int argc, char* args[]) {
 		// draw rectangle
 		environment.setRenderColor(0x00, 0x00, 0x00, 0xFF);
 		environment.drawRectangle(environment.getW()/2 - 50, environment.getH()/2 - 50, 100, 100);
-		
+
+		// render text; the label holds no texture, so this draws nothing
+		label.render();
+
 		// present environment
 		environment.present();
 	}
 	
+	// release the label while its renderer still exists, as the other demos do
+	label.free();
+
 	// clean up environment
 	environment.cleanUp();
 }
