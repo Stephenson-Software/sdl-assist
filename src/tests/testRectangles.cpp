@@ -73,6 +73,30 @@ void changeRectPos() {
 	ypos += yvel;
 }
 
+void toggleWindowSize() {
+	// the window is already open, so the setters resize and retitle it in place
+	if (environment.getW() == 700) {
+		environment.setTitle("GraphicsEnv Test 5 (500x500)");
+		environment.setScreenWidth(500);
+		environment.setScreenHeight(500);
+	}
+	else {
+		environment.setTitle("GraphicsEnv Test 5");
+		environment.setScreenWidth(700);
+		environment.setScreenHeight(700);
+	}
+
+	// getW() and getH() now describe the resized window, so the square and its target are kept inside it
+	if (xpos > environment.getW() - 100) {
+		xpos = environment.getW() - 100;
+	}
+	if (ypos > environment.getH() - 100) {
+		ypos = environment.getH() - 100;
+	}
+	xtarget = chooseRandomX();
+	ytarget = chooseRandomY();
+}
+
 int main(int argc, char* args[]) {	
 	// set title
 	environment.setTitle("GraphicsEnv Test 5");
@@ -92,6 +116,12 @@ int main(int argc, char* args[]) {
 		while (environment.pollEvent() != 0) {
 			if (environment.getEvent()->type == SDL_QUIT) {
 				environment.setRunning(false);
+			}
+
+			// the space bar switches the open window between 700x700 and 500x500; a held key's repeats are ignored
+			SDL_Event* e = environment.getEvent();
+			if (e->type == SDL_KEYDOWN && e->key.repeat == 0 && e->key.keysym.sym == SDLK_SPACE) {
+				toggleWindowSize();
 			}
 		}
 		// clear environment
