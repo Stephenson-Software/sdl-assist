@@ -7,6 +7,7 @@ Text myText2;
 Text myText3;
 
 Button myButton;
+Button sizelessButton;
 
 int timesClicked;
 
@@ -72,6 +73,10 @@ int main(int argc, char* args[]) {
 	initLabels(environment);
 	myButton.setRenderer(environment.getRenderer());
 
+	// a negative width and height are each reported through SDL_LogError() and ignored, so this button
+	// keeps the 0x0 size it was constructed with: it draws nothing and clicking where it would be does nothing
+	sizelessButton.init(300, 200, -50, -50, environment.getRenderer(), &myButtonFunc);
+
 	// main loop
 	while (environment.isRunning()) {
 		while (environment.pollEvent() != 0) {
@@ -79,6 +84,7 @@ int main(int argc, char* args[]) {
 				environment.setRunning(false);
 			}
 			myButton.handleEvent(environment.getEvent());
+			sizelessButton.handleEvent(environment.getEvent());
 		}
 		// clear environment
 		environment.setRenderColor(0xFF, 0xFF, 0xFF, 0XFF);
@@ -95,6 +101,7 @@ int main(int argc, char* args[]) {
 		
 		// render buttons
 		myButton.render();
+		sizelessButton.render();
 
 		// draw footer; Button::render() restores the color, so the blue set above still applies
 		environment.drawRectangle(0, environment.getH() - 25, environment.getW(), 25);
