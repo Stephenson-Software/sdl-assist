@@ -11,8 +11,22 @@ Button::Button() {
 void Button::init(int x, int y, int w, int h, SDL_Renderer* r, void (*funcMouseDown)()) {
 	xpos = x;
 	ypos = y;
-	width = w;
-	height = h;
+
+	// handleEvent() can never hit a negative extent, so such a size is reported and the previous one kept;
+	// Button cannot reach the environment's log.txt, so SDL's own logging is used, as in Text
+	if (w < 0) {
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Button::init() was given width %d, which was ignored; the width must not be negative", w);
+	}
+	else {
+		width = w;
+	}
+	if (h < 0) {
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Button::init() was given height %d, which was ignored; the height must not be negative", h);
+	}
+	else {
+		height = h;
+	}
+
 	setRenderer(r);
 	mouseDownFunc = funcMouseDown;
 }

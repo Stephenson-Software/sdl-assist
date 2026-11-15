@@ -52,7 +52,7 @@ so that the default font path `src/fonts/lazy.ttf` resolves; see
 | `rectangles` | `testRectangles.cpp` | Animation via `drawRectangle` — a black square moves toward a small green target that relocates to a random position each time it is reached. Pressing the space bar switches the open window between 700x700 and 500x500 and changes its title, using `setTitle()`, `setScreenWidth()` and `setScreenHeight()` after `init()`; the square is then moved back inside the window if needed and the target is picked again from the new `getW()` and `getH()`. |
 | `renderpage` | `testRenderPage.cpp` | Layout with rectangles — header, body and footer bands drawn in three shades of blue. |
 | `text` | `testText.cpp` | `Text` rendering — two labels drawn with the font and renderer taken from the environment, the second after the font is reloaded at a smaller size, plus a third, empty label that draws nothing. A font size of 0 is requested before the first `loadMedia()` and ignored, so the first label is still drawn at 32. |
-| `button` | `testButton.cpp` | `Button` rendering and event handling — clicking the button runs a callback that rewrites a neighbouring `Text` label. Before its main loop the demo re-initializes once, following [Usage](#usage): the labels are freed, `cleanUp()` closes the first window, and after `init()` and `loadMedia()` run again the labels are rebuilt with `label.init()` and the button is given the new renderer with `button.setRenderer()`. The second `init()` replaces `log.txt`, so only the second run's messages remain in it. |
+| `button` | `testButton.cpp` | `Button` rendering and event handling — clicking the button runs a callback that rewrites a neighbouring `Text` label. Before its main loop the demo re-initializes once, following [Usage](#usage): the labels are freed, `cleanUp()` closes the first window, and after `init()` and `loadMedia()` run again the labels are rebuilt with `label.init()` and the button is given the new renderer with `button.setRenderer()`. The second `init()` replaces `log.txt`, so only the second run's messages remain in it. A second button is then initialized with a negative width and height, which are reported through `SDL_LogError()` and ignored, so it keeps a 0x0 size, draws nothing and never runs its callback. |
 | `buttoncallbacks` | `testButtonCallbacks.cpp` | The `Button` callback setters and the `Text` getters — hover, mouse-down and mouse-up callbacks attached with `setHoverFunction`, `setMouseDownFunction` and `setMouseUpFunction` each rewrite a status label, and the title label is outlined and measured using `getX`, `getY`, `getWidth` and `getHeight`. |
 
 ### Screenshots
@@ -199,6 +199,13 @@ queued event drained in one frame is tested where it actually happened.
 `button.render()` fills the button in black and then restores the draw color
 that was current before it, so a later `clear()` or `drawRectangle()` still
 uses the color last passed to `setRenderColor()`.
+
+`button.init()` never stores a negative width or height, since `handleEvent()`
+could never hit such a button. Each one is reported through `SDL_LogError()`
+(a `Button` cannot reach `log.txt`) and the previous value is kept, which is 0
+for a button that has not been initialized before; the position, renderer and
+callback are still applied. A width or height of 0 is accepted: that button
+draws nothing and no event ever falls inside it.
 
 A `Button` has three callbacks: the mouse-down callback passed to `init()`, and
 the ones attached with `setHoverFunction()`, `setMouseDownFunction()` and
