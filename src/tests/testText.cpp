@@ -30,8 +30,10 @@ int main(int argc, char* args[]) {
 	SDL_Color textColor = {0x00, 0x00, 0x00, 0xFF};
 	myText.init(25, 25, environment.getFont(), environment.getRenderer(), "GraphicsEnv Test 2:", textColor);
 	
-	// reload the font at a smaller size; loadMedia() closes the font it opened above
+	// reload the font at a smaller size; loadMedia() closes the font it opened above.
+	// both setters are reported to log.txt while the font is open, and both take effect at the next loadMedia()
 	environment.setFontSize(20);
+	environment.setFontPath("src/fonts/lazy.ttf");
 	environment.loadMedia();
 
 	// the first label's texture is already drawn, but its font pointer was closed, so it is re-pointed

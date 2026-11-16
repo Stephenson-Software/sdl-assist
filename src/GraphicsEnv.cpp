@@ -192,6 +192,10 @@ void GraphicsEnv::setFontSize(int size) {
 
 void GraphicsEnv::setFontPath(std::string path) {
 	fontPath = path;
+	if (font != NULL) {
+		// the path is only read when loadMedia() opens the font, so a later change waits for the next loadMedia()
+		reportError("setFontPath(\"" + path + "\") was called after loadMedia(); the open font is kept until loadMedia() is called again");
+	}
 }
 
 // getters
