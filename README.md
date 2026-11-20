@@ -165,13 +165,15 @@ request vsync, so `present()` may not wait for the display and a main loop that
 relies on it for pacing can run much faster.
 
 `setTitle()`, `setScreenWidth()` and `setScreenHeight()` configure the window
-that `init()` creates. Called while the window is open, they retitle or resize
-it in place, so `getW()` and `getH()` keep describing the real window. A window
-manager may still decline the resize (for example while the window is
-maximized), in which case `getW()` and `getH()` report the requested size. A
-width or height of zero or less is never applied: it is reported to `log.txt`,
-or through `SDL_LogError()` while the log is closed, and the previous size is
-kept.
+that `init()` creates. Without them the window is 640x480 and titled
+`GraphicsEnv Default Title`, and `getW()` and `getH()` return 640 and 480 from
+construction onward, before `init()` has run. Called while the window is open,
+they retitle or resize it in place, so `getW()` and `getH()` keep describing
+the real window. A window manager may still decline the resize (for example
+while the window is maximized), in which case `getW()` and `getH()` report the
+requested size. A width or height of zero or less is never applied: it is
+reported to `log.txt`, or through `SDL_LogError()` while the log is closed, and
+the previous size is kept.
 
 `setRenderColor()` takes each channel as an `int` from 0 to 255. A value
 outside that range is clamped to the nearest end of it rather than wrapping, so
@@ -196,6 +198,10 @@ Both are rendered inside the main loop with `label.render()` and
 the event loop so the button can react to the mouse. Each event is hit-tested
 against the pointer position it carries, not the current mouse state, so every
 queued event drained in one frame is tested where it actually happened.
+A button initialized at `x`, `y` with width `w` and height `h` covers the
+pixels from `x` to `x + w - 1` and from `y` to `y + h - 1`, the same area
+`button.render()` fills: a pointer on the column `x + w` or the row `y + h` is
+outside it, so two buttons placed edge to edge never both receive one event.
 `button.render()` fills the button in black and then restores the draw color
 that was current before it, so a later `clear()` or `drawRectangle()` still
 uses the color last passed to `setRenderColor()`.
@@ -258,7 +264,8 @@ defaults to `src/fonts/lazy.ttf` — the font shipped with this repository. The
 path is passed to SDL_ttf as given, so a relative path resolves against the
 working directory; a consuming application should call
 `environment.setFontPath("path/to/font.ttf")` before `loadMedia()` with a path
-that is valid from wherever it is launched. `setFontSize()` must also precede
+that is valid from wherever it is launched. The font opens at size 16 unless
+`setFontSize()` is called. `setFontSize()` must also precede
 `loadMedia()`, since the size is fixed when the font is opened. A call to
 either setter made after the font is open is reported to `log.txt` and leaves
 the open font unchanged until `loadMedia()` is called again, which then opens
