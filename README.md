@@ -167,13 +167,13 @@ relies on it for pacing can run much faster.
 `setTitle()`, `setScreenWidth()` and `setScreenHeight()` configure the window
 that `init()` creates. Without them the window is 640x480 and titled
 `GraphicsEnv Default Title`, and `getW()` and `getH()` return 640 and 480 from
-construction onward, before `init()` has run. Called while the window is open, they retitle or resize
-it in place, so `getW()` and `getH()` keep describing the real window. A window
-manager may still decline the resize (for example while the window is
-maximized), in which case `getW()` and `getH()` report the requested size. A
-width or height of zero or less is never applied: it is reported to `log.txt`,
-or through `SDL_LogError()` while the log is closed, and the previous size is
-kept.
+construction onward, before `init()` has run. Called while the window is open,
+they retitle or resize it in place, so `getW()` and `getH()` keep describing
+the real window. A window manager may still decline the resize (for example
+while the window is maximized), in which case `getW()` and `getH()` report the
+requested size. A width or height of zero or less is never applied: it is
+reported to `log.txt`, or through `SDL_LogError()` while the log is closed, and
+the previous size is kept.
 
 `setRenderColor()` takes each channel as an `int` from 0 to 255. A value
 outside that range is clamped to the nearest end of it rather than wrapping, so
